@@ -1,0 +1,93 @@
+<section class="src-components-formulario">
+  <div class="jumbotron">
+    <h4><u>Ingrese los datos del pago</u></h4>
+    <br>
+    <vue-form :state="FormState" @submit.prevent="enviar()">
+      <validate tag="div">
+        <label for="nombreCliente">Nombre del cliente</label>
+        <input type="text" id="nombreCliente" name="nombreCliente" class="form-control" autocomplete="off"v-model.trim="FormData.nombreCliente" required @input= "FormDirty.nombreCliente=true" :minlength="nombreClienteLongMin" :maxlength="nombreClienteLongMax">
+        
+        <field-messages name="nombreCliente" show="$dirty">
+          <div slot="required" class="alert alert-danger mt-1">Campo requerido</div>
+          <div slot="no-espacios" class="alert alert-danger mt-1">No se permiten espacios intermedios en este campo</div>
+          <div slot="minlength" class="alert alert-danger mt-1">
+            El campo requiere como minimo {{nombreClienteLongMin}} caracteres</div>
+          <div v-if="FormData.nombreCliente.length == nombreClienteLongMax" class="alert alert-danger mt-1">
+            El campo requiere como máximo {{nombreClienteLongMax}} caracteres</div>
+        </field-messages>
+      </validate>
+      <br>
+      <validate tag="div">
+        <label for="nroDocCliente">Número de Documento del Cliente</label>
+        <input type="number" id="nroDocCliente" name="nroDocCliente" class="form-control" autocomplete="off" v-model.number="FormData.nroDocCliente" required :min="nroDocClienteMin" :max="nroDocClienteMax">
+
+        <field-messages name="nroDocCliente" show="$dirty">
+          <div slot="required" class="alert alert-danger mt-1">Campo requerido</div>
+          <div slot="min" class="alert alert-danger mt-1">Tiene que ingresar un documento mayor a {{nroDocClienteMin}} millones</div>
+          <div slot="max" class="alert alert-danger mt-1">Tiene que ingresar un documento menor a {{nroDocClienteMax}} millones</div>
+        </field-messages>
+
+      </validate>
+      <br>
+      <validate tag="div">
+        <label for="montoAPagar">Monto a pagar</label>
+        <input type="number" id="montoAPagar" name="montoAPagar" class="form-control" autocomplete="off" v-model.number="FormData.montoAPagar" required>
+
+        <field-messages name="montoAPagar" show="$dirty">
+          <div slot="required" class="alert alert-danger mt-1">Campo requerido</div>
+          <div slot="min" class="alert alert-danger mt-1">Tiene que ingresar un monto mayor a $ {{montoAPagarMin}} </div>
+        </field-messages>
+      </validate>
+      <br>
+      <validate tag="div">
+        <label for="pagoRealizado">Pago realizado</label>
+        <input type="number" id="pagoRealizado" name="pagoRealizado" class="form-control" autocomplete="off" v-model.number="FormData.pagoRealizado" required>
+
+        <field-messages name="pagoRealizado" show="$dirty">
+          <div slot="required" class="alert alert-danger mt-1">Campo requerido</div>
+          <div slot="min" class="alert alert-danger mt-1">Tiene que ingresar un monto mayor a $ {{pagoRealizadoMin}} </div>
+        </field-messages>
+      </validate>
+      <br>
+      <button class="btn btn-success my-3" :disabled="FormState.$invalid" type="submit">Enviar</button>
+    </vue-form>
+  </div>
+  <div class="table-responsive">
+    <hr>
+    <br>
+    <p v-if="FormData.nombre != FormState.$dirty"><u>Corrobore si los datos ingresados son correctos: </u></p>
+    <br>
+
+    <table class="table" v-if="FormData.nombreCliente != FormState.$dirty">
+      <thead>
+        <tr class="text-gray" style="background-color: #84ffd4;">
+          <th scope="col">Nombre del cliente</th>
+          <th scope="col">Númedo de Documento del Cliente</th>
+          <th scope="col">Monto a pagar</th>
+          <th scope="col">Pago Realizado</th>
+          <th scope="col">Fecha  creación del registro</th>
+          <th scope="col">Saldo de la deuda</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="text-gray" :style=getEstilo()>
+          <td>{{FormData.nombreCliente}}</td>
+          <td>{{FormData.nroDocCliente}}</td>
+          <td>$ {{FormData.montoAPagar}}</td>
+          <td>$ {{FormData.pagoRealizado}}</td>
+          <td>{{obtenerFechaYHora()}}</td>
+          <td>$ {{obtenerDeuda()}}</td>
+          
+        </tr>
+      </tbody>
+    </table>
+    <p v-else class="alert alert-warning">
+      Todavía no ha ingresado datos
+    </p>
+
+  </div>
+
+  </div>
+  
+</section>
+
